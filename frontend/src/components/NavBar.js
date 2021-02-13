@@ -1,5 +1,5 @@
 import { Menu } from 'antd';
-import { TableOutlined, BarChartOutlined, HeatMapOutlined } from '@ant-design/icons';
+import { TableOutlined, BarChartOutlined, HeatMapOutlined,GithubOutlined } from '@ant-design/icons';
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 
@@ -17,6 +17,11 @@ function NavBar() {
             <Menu.Item key="map" icon={<HeatMapOutlined />}>
                 <Link to='/map'>Map</Link>
             </Menu.Item>
+
+            <Menu.Item style={{ float: 'right' }} icon={<GithubOutlined />}>
+                <a target='_blank' href='https://github.com/JANICECY/ws-product-python' rel="noreferrer">Designed by <b>Ying Chen</b></a>
+            </Menu.Item>
+
         </Menu>
     );
 }
