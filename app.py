@@ -46,7 +46,7 @@ def rated_limited(max_tokens_per_second):
             else:
                 bucket = bucket - 1
                 return func(*args, **kargs)
-
+        rate_limited_func.__name__ = func.__name__
         return rate_limited_func
     return decorate
 
