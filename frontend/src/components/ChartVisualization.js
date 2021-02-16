@@ -24,7 +24,7 @@ const { Title } = Typography;
 function ChartVisualization(props) {
 
     // fetch data from redux store 
-    const { hourlyEvents, hourlyStats, dailyEvents, dailyStats } = useSelector(state => state)
+    const { hourlyEvents, hourlyStats, dailyEvents, dailyStats, fetchDataFailed } = useSelector(state => state)
 
     // an array of unique dates that user can select for viewing hourly Events 
     const eventsOptions = useMemo(() => {
@@ -59,7 +59,7 @@ function ChartVisualization(props) {
                 autoFit
                 height={400}
                 data={data}
-                scale={{ value: { min: 0, max: 11 } }}
+                scale={{ tickCount: 12 }}
             >
                 <Line position="hour*events" tooltip={['hour*events', (hour, events) => {
                     return {
@@ -285,15 +285,14 @@ function ChartVisualization(props) {
 
                     {/* Hourly Events  */}
                     <div className='hourly-events-container' style={{ marginBottom: 20 }}>
-                        <Title level={3}>Hourly Event</Title>
+                        <Title level={3}>Hourly Events</Title>
                         <Select
                             style={{ marginBottom: 20, float: 'right', zIndex: 1 }}
                             onChange={(val) => setEventsSelectedDate(val)}
                             value={selectedEventsDate}
-                            // tagRender={(props) => new Date(props.value).toLocaleDateString() }
                             options={eventsOptions.map(d => (
                                 {
-
+                                    label: new Date(d).toLocaleDateString(),
                                     value: d
                                 })
                             )}
@@ -316,10 +315,9 @@ function ChartVisualization(props) {
                             style={{ marginBottom: 20, float: 'right', zIndex: 1 }}
                             onChange={(val) => setSelectedStatsDate(val)}
                             value={selectedEventsDate}
-                            // tagRender={(props) => new Date(props.value).toLocaleDateString() }
                             options={statsOptions.map(d => (
                                 {
-
+                                    label: new Date(d).toLocaleDateString(),
                                     value: d
                                 })
                             )}

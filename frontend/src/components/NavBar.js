@@ -9,7 +9,7 @@ function NavBar() {
     return (
         <Menu onClick={(e) => setActiveTab(e.target)} selectedKeys={[activeTab]} mode="horizontal">
             <Menu.Item key="tab1" icon={<BarChartOutlined />}>
-                <Link to='/chart'>Chart visualizations</Link>
+                <Link to='/chart'>Charts</Link>
             </Menu.Item>
             <Menu.Item key="table" icon={<TableOutlined />}>
                 <Link to='/table'>Data Table</Link>

@@ -98,3 +98,4 @@ ENV/
 .mypy_cache/
 
 frontend/node_modules/
+frontend/src/components/dummyData.js

@@ -7,7 +7,36 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.outer-wrapper {
+  background-color: #f6fafc;
+  height: 100vh;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+
+.main-container {
+  padding: 1% 2%;
+
+}
+
+
+.filters-container>* {
+  margin-left: 20px;
+}
+
+.chart-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.chart-container > * {
+  width: 48%;
+  height: 100%;
+}
+

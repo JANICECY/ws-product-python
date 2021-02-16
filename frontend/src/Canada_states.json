@@ -1,0 +1,66 @@
+[{
+    "name": "Alberta",
+    "id": "AB",
+    "lon": -116.5765035,
+    "lat": 53.9332706
+}, {
+    "name": "British Columbia",
+    "id": "BC",
+    "lon": -127.6476206,
+    "lat": 53.7266683
+}, {
+    "name": "Manitoba",
+    "id": "MB",
+    "lon": -98.8138763,
+    "lat": 53.7608608
+}, {
+    "name": "New Brunswick",
+    "id": "NB",
+    "lon": -66.4619164,
+    "lat": 46.5653163
+}, {
+    "name": "Newfoundland And Labrador",
+    "id": "NL",
+    "lon": -56.3330408,
+    "lat": 48.6064556
+}, {
+    "name": "Nova Scotia",
+    "id": "NS",
+    "lon": -63.744311,
+    "lat": 44.6819866
+}, {
+    "name": "Nunavut",
+    "id": "NU",
+    "lon": -83.1075769,
+    "lat": 70.2997711
+}, {
+    "name": "Northwest Territories",
+    "id": "NT",
+    "lon": -124.8457334,
+    "lat": 64.8255441
+}, {
+    "name": "Ontario",
+    "id": "ON",
+    "lon": -85.3232139,
+    "lat": 51.253775
+}, {
+    "name": "Prince Edward Island",
+    "id": "PE",
+    "lon": -63.4168136,
+    "lat": 46.510712
+}, {
+    "name": "Quebec",
+    "id": "QC",
+    "lon": -73.5491361,
+    "lat": 52.9399159
+}, {
+    "name": "Saskatchewan",
+    "id": "SK",
+    "lon": -106.4508639,
+    "lat": 52.9399159
+}, {
+    "name": "Yukon",
+    "id": "YT",
+    "lon": -135,
+    "lat": 64.2823274
+}]
