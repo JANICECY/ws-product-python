@@ -1,5 +1,5 @@
 import { Select, Card, Typography } from 'antd'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
     G2,
     Chart,
@@ -12,28 +12,47 @@ import {
     Interval,
     Line,
     Point,
-
 } from "bizcharts";
 import { formatNum } from '../helper'
-import axios from 'axios'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import DataSet from "@antv/data-set";
-import {
-    eventsHourly as hourlyEvents,
-    eventsDaily as dailyEvents,
-    hourlyStats,
-    dailyStats
-} from './dummyData'
+
 
 const { Title } = Typography;
+
+
 function ChartVisualization(props) {
-    // TODO: Memoization 
-    const dateOptions = [...new Set(hourlyEvents.map(i => i.date))]
-    const [selectedDate, setSelectedDate] = useState(dateOptions[0])
+
+    // fetch data from redux store 
+    const { hourlyEvents, hourlyStats, dailyEvents, dailyStats } = useSelector(state => state)
+
+    // an array of unique dates that user can select for viewing hourly Events 
+    const eventsOptions = useMemo(() => {
+        return [...new Set(hourlyEvents.map(i => i.date))]
+    }, [hourlyEvents])
+
+    // console.log(eventsOptions);
+    // an array of unique dates that user can select for viewing hourly stats 
+    const statsOptions = useMemo(() => {
+        return [...new Set(hourlyStats.map(i => i.date))]
+    }, [hourlyStats])
+
+    useEffect(() => {
+        setEventsSelectedDate(eventsOptions[0])
+    }, [hourlyEvents])
 
 
-    const getHourlyEventsChart = (data) => {
-        console.log(data.map(d => d.hour));
+    useEffect(() => {
+        setSelectedStatsDate(statsOptions[0])
+    }, [hourlyStats])
+
+    // currently selected option 
+    const [selectedEventsDate, setEventsSelectedDate] = useState([])
+    const [selectedStatsDate, setSelectedStatsDate] = useState([])
+
+
+    const HourlyEventsChart = useMemo(() => {
+        const data = hourlyEvents.filter(i => i.date === selectedEventsDate)
         return (
             <Chart
                 padding={[10, 20, 50, 50]}
@@ -60,9 +79,11 @@ function ChartVisualization(props) {
                 <Axis name='hour' label={{ formatter: (text) => `${text}:00` }} />
             </Chart>
         )
-    }
+    }, [hourlyEvents, selectedEventsDate])
 
-    const getDailyStatsChart = () => {
+
+
+    const DailyStatsChart = useMemo(() => {
         const ds = new DataSet();
         const dv = ds.createView().source(dailyStats);
         dv.transform({
@@ -99,18 +120,15 @@ function ChartVisualization(props) {
                 />
             </Chart>
         );
-    }
+    }, [dailyStats])
 
-    const getHourlyStatsChart1 = (data) => {
+    const HourlyStatsChart = useMemo(() => {
+
+        // filter stats that only match the selected date 
+        const data = hourlyStats.filter(i => i.date === selectedStatsDate)
+
         let chartIns = null;
         const colors = ["#6394f9", "#62daaa", '#637597'];
-
-        const axisLabel = {
-            formatter(text, item, index) {
-                // return moment(text).format('YYYY-MM-DD HH:mm:ss')
-                return `${text}:00`
-            },
-        };
 
         return (
             <Chart
@@ -121,7 +139,7 @@ function ChartVisualization(props) {
                     chartIns = chart;
                 }}
             >
-                <Axis name="hour" label={axisLabel} />
+                <Axis name="hour" label={{ formatter: (text) => `${text}:00` }} />
                 <Legend
                     custom={true}
                     allowAllCanceled={true}
@@ -233,10 +251,10 @@ function ChartVisualization(props) {
                 />
             </Chart>
         );
-    }
+    }, [selectedStatsDate, hourlyStats])
 
-    const getDailyEventsCHart = (data) => {
-        const convertedData = data.map(({ date, events }) => (
+    const DailyEventsCHart = useMemo(() => {
+        const convertedData = dailyEvents.map(({ date, events }) => (
             {
                 // format date dd/mm/yyyy
                 date: new Date(date).toLocaleDateString(),
@@ -249,7 +267,7 @@ function ChartVisualization(props) {
                 <Tooltip shared />
             </Chart>
         )
-    }
+    }, [dailyEvents])
 
     return (
         <div className='main-container'>
@@ -261,7 +279,7 @@ function ChartVisualization(props) {
                     {/* Daily Events */}
                     <div className='daily-events-container'>
                         <Title level={3}>Daily Events</Title><br />
-                        {getDailyEventsCHart(dailyEvents)}<br />
+                        {DailyEventsCHart}<br />
                     </div>
 
 
@@ -270,10 +288,10 @@ function ChartVisualization(props) {
                         <Title level={3}>Hourly Event</Title>
                         <Select
                             style={{ marginBottom: 20, float: 'right', zIndex: 1 }}
-                            onChange={(val) => setSelectedDate(val)}
-                            value={selectedDate}
+                            onChange={(val) => setEventsSelectedDate(val)}
+                            value={selectedEventsDate}
                             // tagRender={(props) => new Date(props.value).toLocaleDateString() }
-                            options={dateOptions.map(d => (
+                            options={eventsOptions.map(d => (
                                 {
 
                                     value: d
@@ -281,7 +299,7 @@ function ChartVisualization(props) {
                             )}
                         >
                         </Select>
-                        {getHourlyEventsChart(hourlyEvents.filter(i => i.date === selectedDate))}
+                        {HourlyEventsChart}
                     </div>
                 </Card>
 
@@ -289,12 +307,25 @@ function ChartVisualization(props) {
 
                     <div>
                         <Title level={3}>Daily Stats</Title>
-                        {getDailyStatsChart()}
+                        {DailyStatsChart}
                     </div>
 
                     <div className='hourly-stats-container'>
                         <Title level={3}>Hourly Stats</Title>
-                        {getHourlyStatsChart1(hourlyStats.filter(i => i.date === selectedDate))}
+                        <Select
+                            style={{ marginBottom: 20, float: 'right', zIndex: 1 }}
+                            onChange={(val) => setSelectedStatsDate(val)}
+                            value={selectedEventsDate}
+                            // tagRender={(props) => new Date(props.value).toLocaleDateString() }
+                            options={statsOptions.map(d => (
+                                {
+
+                                    value: d
+                                })
+                            )}
+                        >
+                        </Select>
+                        {HourlyStatsChart}
                     </div>
                 </Card>
             </div>
