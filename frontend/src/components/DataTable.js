@@ -1,14 +1,19 @@
-import React, { useState } from 'react'
-import { PIOs, dailyStats, hourlyStats } from './dummyData'
-import { Table, Input, Button, Space, Card, Collapse } from 'antd';
+import React, { useMemo, useState } from 'react'
+import { Table, Input, Button, Space, Card, Typography } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { formatNum } from '../helper'
+import { useSelector } from 'react-redux'
+
+
+const { Title } = Typography
 
 
 function DataTable() {
     const [searchText, setSearchText] = useState('')
     const [searchedColumn, setSearchColumn] = useState('')
+    const { POIs, dailyStats, hourlyStats } = useSelector(state => state)
+
     let searchInput;
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -87,112 +92,105 @@ function DataTable() {
                 ),
     });
 
-    const columns = [
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            key: 'name',
-            width: '30%',
-            ...getColumnSearchProps('name'),
-        },
-        {
-            title: 'Latitude',
-            dataIndex: 'lat',
-            key: 'lat',
-            width: '30%',
-            sorter: (a, b) => a.lat - b.lat,
-        },
-        {
-            title: 'Longitude',
-            dataIndex: 'lon',
-            key: 'lon',
-            width: '30%',
-            sorter: (a, b) => a.lon - b.lon,
-        },
-
-
-    ]
-
-    const getStatsTable = () => {
+    const POIsTable = useMemo(() => {
         const columns = [
             {
-                title: 'Date',
-                dataIndex: 'date',
-                key: 'date',
-                width: '25%',
-                sorter: (a, b) => new Date(a.date) - new Date(b.date),
-                render: date => new Date(date).toLocaleDateString(),
+                title: 'Name',
+                dataIndex: 'name',
+                key: 'name',
+                width: '30%',
+                ...getColumnSearchProps('name'),
             },
             {
-                title: 'Clicks',
-                dataIndex: 'clicks',
-                key: 'clicks',
-                width: '25%',
-                sorter: (a, b) => a.clicks - b.clicks,
-                render: value => formatNum(value)
+                title: 'Latitude',
+                dataIndex: 'lat',
+                key: 'lat',
+                width: '30%',
+                sorter: (a, b) => a.lat - b.lat,
             },
             {
-                title: 'Impressions',
-                dataIndex: 'impressions',
-                key: 'impressions',
-                width: '25%',
-                sorter: (a, b) => a.impressions - b.impressions,
-                render: impressions => formatNum(impressions)
+                title: 'Longitude',
+                dataIndex: 'lon',
+                key: 'lon',
+                width: '30%',
+                sorter: (a, b) => a.lon - b.lon,
             },
-            {
-                title: 'Revenue',
-                dataIndex: 'revenue',
-                key: 'revenue',
-                width: '25%',
-                sorter: (a, b) => a.revenue - b.revenue,
-                render: revenue => "$" + formatNum(revenue)
-            }
-        ]
-
-        const subColumns = [
-            {
-                title: 'Hour',
-                dataIndex: 'hour',
-                key: 'hour',
-                width: '25%',
-                sorter: (a, b) => a.hour - b.hour,
-                render: hour => `${hour}:00`
-            },
-            {
-                title: 'Clicks',
-                dataIndex: 'clicks',
-                key: 'clicks',
-                width: '25%',
-                sorter: (a, b) => a.clicks - b.clicks,
-                render: value => formatNum(value)
-            },
-            {
-                title: 'Impressions',
-                dataIndex: 'impressions',
-                key: 'impressions',
-                width: '25%',
-                sorter: (a, b) => a.impressions - b.impressions,
-                render: value => formatNum(value)
-            },
-            {
-                title: 'Revenue',
-                dataIndex: 'revenue',
-                key: 'revenue',
-                width: '25%',
-                sorter: (a, b) => a.revenue - b.revenue,
-                render: revenue => "$" + formatNum(revenue)
-            }
         ]
 
 
         return (
+            <Table columns={columns} dataSource={POIs} />
+        )
+    }, [POIs])
+
+
+    const StatsTable = useMemo(() => {
+
+        const [cols, subCols] = (() => {
+            const commonCols = [
+                {
+                    title: 'Clicks',
+                    dataIndex: 'clicks',
+                    key: 'clicks',
+                    width: '25%',
+                    sorter: (a, b) => a.clicks - b.clicks,
+                    render: value => formatNum(value)
+                },
+                {
+                    title: 'Impressions',
+                    dataIndex: 'impressions',
+                    key: 'impressions',
+                    width: '25%',
+                    sorter: (a, b) => a.impressions - b.impressions,
+                    render: impressions => formatNum(impressions)
+                },
+                {
+                    title: 'Revenue',
+                    dataIndex: 'revenue',
+                    key: 'revenue',
+                    width: '25%',
+                    sorter: (a, b) => a.revenue - b.revenue,
+                    render: revenue => "$" + formatNum(revenue)
+                }
+            ]
+
+            const cols = [
+                {
+                    title: 'Date',
+                    dataIndex: 'date',
+                    key: 'date',
+                    width: '25%',
+                    sorter: (a, b) => new Date(a.date) - new Date(b.date),
+                    render: date => new Date(date).toLocaleDateString(),
+                },
+                ...commonCols
+            ]
+
+
+            const subCols = [
+                {
+                    title: 'Hour',
+                    dataIndex: 'hour',
+                    key: 'hour',
+                    width: '25%',
+                    sorter: (a, b) => a.hour - b.hour,
+                    render: hour => `${hour}:00`
+                },
+                ...commonCols
+            ]
+
+            return [cols, subCols]
+        })();
+
+
+        return (
             <Table
-                columns={columns}
+                columns={cols}
                 dataSource={dailyStats.map((item, index) => Object.assign(item, { key: index }))}
                 expandable={{
                     expandedRowRender: ({ date }) => (
                         <Table
-                            columns={subColumns}
+                            columns={subCols}
                             dataSource={hourlyStats.filter(i => i.date === date)}
                         />
                     ),
@@ -201,15 +199,19 @@ function DataTable() {
 
             />
         )
-    }
+    }, [hourlyStats, dailyStats])
+
+
     return (
         <div className='main-container'>
             <Card hoverable style={{ marginBottom: 20 }}>
-                <p><b>Click plus icon to expend 😎</b></p>
-                {getStatsTable()}
+                <Title level={3}>Daily Events</Title> 
+                {StatsTable}
+                <b>Click plus icon to expend 😀</b>
             </Card>
             <Card hoverable >
-                <Table columns={columns} dataSource={PIOs} />
+            <Title level={3}>Point of Interests</Title> 
+                {POIsTable}
             </Card>
 
         </div>
