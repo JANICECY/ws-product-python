@@ -1,4 +1,4 @@
-import { Select, Card, Typography } from 'antd'
+import { Select, Card, Typography, message } from 'antd'
 import React, { useState, useEffect, useMemo } from 'react'
 import {
     G2,
@@ -45,6 +45,11 @@ function ChartVisualization(props) {
     useEffect(() => {
         setSelectedStatsDate(statsOptions[0])
     }, [hourlyStats])
+
+    useEffect(() => {
+        if (fetchDataFailed)
+            message.error('Something went wrong... Please refresh the page.')
+    }, [fetchDataFailed])
 
     // currently selected option 
     const [selectedEventsDate, setEventsSelectedDate] = useState([])

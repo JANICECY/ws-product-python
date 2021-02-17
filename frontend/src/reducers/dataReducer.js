@@ -60,6 +60,9 @@ export const fetchData = (dispatch) => {
             .then(res => {
                 dispatch({ type: url, payload: res.data })
             })
+            .catch(e => {
+                dispatch({ type: FETCH_DATA_FAILED, })
+            })
     }
     console.log('fetch data');
     [DAILY_EVENTS, HOURLY_EVENTS, HOURLY_STATS, DAILY_STATS, POIS].forEach(async element => {
