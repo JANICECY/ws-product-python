@@ -40,3 +40,23 @@ code {
   height: 100%;
 }
 
+
+.d-flex {
+  display: flex;
+}
+
+.location-table {
+  width: 30%;
+  background-color: white;
+}
+
+
+
+.location-item {
+  padding: 0 5% !important;
+  background-color: white;
+}
+
+.location-item:hover {
+  background-color: #fafafa;
+}
